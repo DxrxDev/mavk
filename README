@@ -1,2 +1,4 @@
 # mavk 
- init
+
+The "Minimal Abstraction for Vulkan" is a framework to simplify the usage of vulkan using C11
+(There are plans to update the source code to C23)
