@@ -1,5 +1,5 @@
 /*
-	MAVK header file: This file contains the main include for mavk.
+	MAVK header file: This file contains types for mavk.
 	   ^ (Minimal Abstraction for Vulkan)
 
 	=== (LICENSE) ===
@@ -30,15 +30,13 @@
 	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
 */
 
-#if !defined(MAVK_HEADER_DEFINED)
-#define MAVK_HEADER_DEFINED
+#if !defined(MAVK_HEADER_TYPES)
+#define MAVK_HEADER_TYPES
 
-#include <stdint.h>
+typedef uint32_t MAVKResult
 
-#include "version.h"
-#include "usefulMacros.h"
-#include "types.h"
+typedef struct MAVKInitStruct {
+	
+} MAVKInitStruct;
 
-
-
-#endif /* HEADER GUARD*/
+#endif

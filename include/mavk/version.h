@@ -1,5 +1,5 @@
 /*
-	MAVK header file: This file contains the main include for mavk.
+	MAVK header file: This file contains the version information 
 	   ^ (Minimal Abstraction for Vulkan)
 
 	=== (LICENSE) ===
@@ -30,15 +30,15 @@
 	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
 */
 
-#if !defined(MAVK_HEADER_DEFINED)
-#define MAVK_HEADER_DEFINED
+#if !defined(MAVK_HEADER_VERSION_DEFINED)
+#define MAVK_HEADER_VERSION_DEFINED
 
-#include <stdint.h>
+#define MAVK_VERSION_MAJOR 0
+#define MAVK_VERSION_MINOR 0
+#define MAVK_VERSION_PATCH 0
 
-#include "version.h"
-#include "usefulMacros.h"
-#include "types.h"
+#define MAVK_VERSION_SIGNATURE 20230609
 
+#define MAVK_VERSION_NAME "luca"
 
-
-#endif /* HEADER GUARD*/
+#endif

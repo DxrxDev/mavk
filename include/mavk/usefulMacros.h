@@ -1,5 +1,5 @@
 /*
-	MAVK header file: This file contains the main include for mavk.
+	MAVK header file: This file contains useful macros for mavk.
 	   ^ (Minimal Abstraction for Vulkan)
 
 	=== (LICENSE) ===
@@ -30,15 +30,16 @@
 	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
 */
 
-#if !defined(MAVK_HEADER_DEFINED)
-#define MAVK_HEADER_DEFINED
+#if !defined(MAVK_HEADER_USEFUL_MACROS)
+#define MAVK_HEADER_USEFUL_MACROS
 
-#include <stdint.h>
+#define MAVK_DECL
+#define MAVK_IMPL
 
-#include "version.h"
-#include "usefulMacros.h"
-#include "types.h"
-
+#define MAVK_OK 0
 
 
-#endif /* HEADER GUARD*/
+#define MAVK_TRUE 1
+#define MAVK_FALSE 0
+
+#endif
