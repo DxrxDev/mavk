@@ -41,4 +41,4 @@
 
 #define MAVK_VERSION_NAME "luca"
 
-#endif
+#endif /* HEADER GUARD */

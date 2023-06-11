@@ -34,11 +34,18 @@
 #define MAVK_HEADER_DEFINED
 
 #include <stdint.h>
+#include <stdlib.h>
+#include <vulkan/vulkan.h>
 
 #include "version.h"
 #include "usefulMacros.h"
-#include "types.h"
 
+typedef uint32_t MavkResult;
+typedef uint32_t MavkBool;
 
+typedef struct MavkCreateInstance{
+	uint8_t x;
+} MavkCreateReference;
+MAVK_DECL MavkResult mavkCreateInstance(MavkCreateReference *p);
 
-#endif /* HEADER GUARD*/
+#endif /* HEADER GUARD */

@@ -1,4 +1,68 @@
-# mavk 
+# MAVK
 
-The "Minimal Abstraction for Vulkan" is a framework to simplify the usage of vulkan using C11
-(There are plans to update the source code to C23)
+The "Minimal Abstraction for Vulkan" is a framework to simplify the usage of vulkan using C17.
+
+Since this is soley a vulkan framework, there aren't / won't be any tools for window /handling,
+maths calculations, handling input events, etc. Instead you are free to use any tools you prefer
+for the job. See the RECOMMENDATIONS.3RD PARTY section
+
+
+==============
+# WHY USE MAVK
+
+If you still want the performance of a vulkan application but dont want to write
+all the boiler-plate code to get everything up and running. Mavk offers many abstractions
+while still having the option to write the lower level vulkan code if desired.
+
+
+=========
+# BUILDING
+
+The easiest way to build this project is to use the included Premake5 file.
+
+If you choose not to use premake, then you must define macros for the following:
+	- Platofrm (MAVK_PLATFORM_XXX)
+	- Debug setting (MAVK_NDEBUG, MAVK_DEBUG)
+
+
+=================
+# RECOMMENDATIONS
+
+------------
+## 3RD PARTY
+
+I recommend using glfw3 for window & surface creation.
+
+
+I dont recommend programming with vulkan if you are a beginner in graphics programming,
+that being said mavk might be a way to ease yourself into the world of vulkan.
+
+
+=========
+# LICENSE
+
+BSD 2-Clause License
+
+Copyright (c) 2023 - present, DxrxDev <DxrxMa@gmail.com>
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation
+and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+

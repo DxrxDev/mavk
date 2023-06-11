@@ -1,2 +1,7 @@
-examples/*/bin
-examples/*/bin-int
+bin
+bin-int
+
+examples
+
+Makefile
+*.make

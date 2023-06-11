@@ -1,5 +1,5 @@
 /*
-	MAVK header file: This file contains types for mavk.
+	MAVK header file: This file contains the main source definitions for mavk.
 	   ^ (Minimal Abstraction for Vulkan)
 
 	=== (LICENSE) ===
@@ -30,13 +30,16 @@
 	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
 */
 
-#if !defined(MAVK_HEADER_TYPES)
-#define MAVK_HEADER_TYPES
+#include "../include/mavk/mavk.h"
 
-typedef uint32_t MAVKResult
+static VkInstance s_instance;
 
-typedef struct MAVKInitStruct {
-	
-} MAVKInitStruct;
-
-#endif
+static MavkResult imavkCreateInstanceDefault(){
+	MAVK_DEBUG_ERR("imavkCreateInstanceDefault not implemented", -1);
+}
+MAVK_IMPL MavkResult mavkCreateInstance(MavkCreateReference *p){
+	if (p == NULL) {
+		return imavkCreateInstanceDefault();
+	}
+	return MAVK_OK;
+}

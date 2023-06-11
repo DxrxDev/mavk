@@ -33,13 +33,26 @@
 #if !defined(MAVK_HEADER_USEFUL_MACROS)
 #define MAVK_HEADER_USEFUL_MACROS
 
+#if defined(DEBUG) && !defined(NDEBUG)
+	#define MAVK_DEBUG
+	#include <stdio.h>
+#endif
+
 #define MAVK_DECL
 #define MAVK_IMPL
 
 #define MAVK_OK 0
 
-
 #define MAVK_TRUE 1
 #define MAVK_FALSE 0
 
+#if defined(MAVK_DEBUG)
+	#define MAVK_DEBUG_MSG(str) puts(str)
+	#define MAVK_DEBUG_ERR(str, err) puts(str); exit(err)
+#else
+	#define MAVK_DEBUG_MSG(str)
+	#define MAVK_DEBUG_ERR(str, err)
 #endif
+
+
+#endif /* HEADER GUARD */
