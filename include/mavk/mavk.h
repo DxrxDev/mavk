@@ -37,6 +37,10 @@
 #include <stdlib.h>
 #include <vulkan/vulkan.h>
 
+#if defined(MAVK_PLATFORM_LINUX)
+#define TEST "rgnjigrnji"
+#endif
+
 #include "version.h"
 #include "usefulMacros.h"
 

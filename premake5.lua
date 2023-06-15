@@ -31,83 +31,50 @@
 --]]
 
 
--- [[ PLATFORM ]]
--- This file contains functionality for automatically detecting the OS and window
--- managers, however it is possible to feed that information manually
--- (call premake5 [intended build system] --os=XXX)
-platformMacro = nil
+newoption({
+	trigger = "wm",
+	description = "Applies to unix systems only. Spicifies if using x11 or wayland",
+	allowed = {
+		{"x11", "X11"},
+		{"wayland", "Wayland"}
+	},
+	catagory = "Build Options"
+})
 
--- [[ WINDOW MANAGER ]]
--- This only applies to unix like systems. windowManager tells mavk wether
--- you are running off of Xorg or Wayland. again this can detect automatically.
--- (to give custom value, add to the main premake5 file `windowManager = XXX`)
+newoption({
+	trigger = "using-glfw",
+	description = "Spicify if using glfw for window creation"
+})
 
--- [[ THIRD PARTY ]]
--- If you are using a third party for window/surface creation, spicify
--- `thirdParty = "XXX"` in the main premake5 file. Mavk does NOT automatically detect this.
-
-
--- Function to detect the platform
-function GetPlatform()
-	platformMacro = "MAVK_PLATFORM_" .. string.upper(os.target())
-	defines {paltformMacro}
-	print("mavk: defined macro " .. platformMacro)
-end
-
--- Function to detect window manager
-function GetWindowManager()
-	local handle = io.popen("echo $XDG_SESSION_TYPE")
-	if handle:read("l") == "x11" then
-		windowManager = "MAVK_PLATFORM_X11"
-	else
-		windowManager = "MAVK_PLATFORM_WAYLAND"
-	end
-	handle:close()
-
-	defines {windowManager}
-	print("mavk: defined macro " .. windowManager)
-end
-
--- Function to set window manager
-function SetWindowManager()
-	windowManager = "MAVK_PLATFORM_" .. string.upper(windowManager)
-	defines {windowManager}
-	print("mavk: defined macro " .. windowManager)
-end
-
--- Function to define third party APIs
-function DefineThirdParty()
-	thirdParty = "MAVK_PLATFORM_" .. string.upper(thirdParty)
-	defines {thirdParty}
-	print("mavk: defined macro " .. thirdParty)
-end
-
-
-project "mavk"
+project("mavk")
 	language "C"
 	cdialect "C17"
 	kind "StaticLib"
-	files {"src/*.c"}
+	files {"**.c", "**.h"}
 
-	-- This code is all in regular lua as premake5 does not
-	-- offer all these tools out the box
-	GetPlatform()
+	objdir "bin-int/${cfg.system}-${cfg.buildcfg}-"
 
-	if (os.target() == "linux" or os.target() == "bsd") and windowManager == nil then
-		GetWindowManager()
-	else	SetWindowManager()  end
-
-	if thirdParty ~= nil then DefineThirdParty() end
-
-	-- Back to regular premake5
-	filter {"configurations:debug"}
+	filter "configurations:debug"
 		defines {"DEBUG"}
-		targetdir "./bin/debug/"
-		objdir "./bin-int/debug/"
-	filter {"configurations:ndebug"}
+	filter "configurations:ndebug"
 		defines {"NDEBUG"}
-		targetdir "./bin"
-		objdir "./bin-int/"
 
+
+	-- define platform macro
+	defines {"MAVK_PLATFORM_" .. string.upper(os.target())}
+
+	-- define window manager (if necessary)
+	filter {"system:linux or bsd", "not options:wm"}
+		defines {"MAVK_PLATFORM_X11"}
+	filter {"system:linux or bsd", "options:wm=x11"}
+		defines {"MAVK_PLATFORM_X11"}
+	filter {"system:linux or bsd", "options:wm=wayland"}
+		defines {"MAVK_PLATFORM_WAYLAND"}
+
+
+	-- if 'using-glfw' is set, define the thing
+	filter "options:using-glfw"
+		defines {"MAVK_PLATFORM_GLFW"}
+	
 	filter ""
-
+-- project end
