@@ -2,3 +2,5 @@
 
 The "Minimal Abstraction for Vulkan" is a framework to simplify the usage of vulkan using C11
 (There are plans to update the source code to C23)
+
+Note: check dev branch as the master branch doesnt have is blank as you can see :)
