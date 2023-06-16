@@ -30,7 +30,8 @@
 	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --]]
 
-
+-- When calling premake5 on a unix-like system, make sure to use the --wm=XXX option.
+-- Note: this file assumes if the --wm option is not set, then x11 is used as default.
 newoption({
 	trigger = "wm",
 	description = "Applies to unix systems only. Spicifies if using x11 or wayland",
@@ -41,6 +42,9 @@ newoption({
 	catagory = "Build Options"
 })
 
+
+-- Like above, if you are using GLFW, make sure to use the --using-glfw option.
+-- By default GLFW is not enabled.
 newoption({
 	trigger = "using-glfw",
 	description = "Spicify if using glfw for window creation"
@@ -52,12 +56,16 @@ project("mavk")
 	kind "StaticLib"
 	files {"**.c", "**.h"}
 
-	objdir "bin-int/${cfg.system}-${cfg.buildcfg}-"
+	objdir    "bin-int/%{cfg.system}-%{cfg.buildcfg}"
+	targetdir "bin/%{cfg.system}-%{cfg.buildcfg}"
 
 	filter "configurations:debug"
 		defines {"DEBUG"}
+		targetname "mavk-debug"
+
 	filter "configurations:ndebug"
 		defines {"NDEBUG"}
+		targetname "mavk"
 
 
 	-- define platform macro
@@ -66,10 +74,19 @@ project("mavk")
 	-- define window manager (if necessary)
 	filter {"system:linux or bsd", "not options:wm"}
 		defines {"MAVK_PLATFORM_X11"}
+		objdir    "bin-int/%{cfg.system}-x11-%{cfg.buildcfg}"
+		targetdir "bin/%{cfg.system}-x11-%{cfg.buildcfg}"
+
 	filter {"system:linux or bsd", "options:wm=x11"}
 		defines {"MAVK_PLATFORM_X11"}
+		objdir    "bin-int/%{cfg.system}-x11-%{cfg.buildcfg}"
+		targetdir "bin/%{cfg.system}-x11-%{cfg.buildcfg}"
+
 	filter {"system:linux or bsd", "options:wm=wayland"}
 		defines {"MAVK_PLATFORM_WAYLAND"}
+		objdir    "bin-int/%{cfg.system}-wl-%{cfg.buildcfg}"
+		targetdir "bin/%{cfg.system}-wl-%{cfg.buildcfg}"
+	filter ""
 
 
 	-- if 'using-glfw' is set, define the thing
