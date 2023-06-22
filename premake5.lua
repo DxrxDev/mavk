@@ -55,6 +55,7 @@ project("mavk")
 	cdialect "C17"
 	kind "StaticLib"
 	files {"**.c", "**.h"}
+	includedirs {"include"}
 
 	objdir    "bin-int/%{cfg.system}-%{cfg.buildcfg}"
 	targetdir "bin/%{cfg.system}-%{cfg.buildcfg}"

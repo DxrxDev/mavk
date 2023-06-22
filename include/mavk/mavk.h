@@ -37,19 +37,27 @@
 #include <stdlib.h>
 #include <vulkan/vulkan.h>
 
-#if defined(MAVK_PLATFORM_LINUX)
-#define TEST "rgnjigrnji"
-#endif
-
 #include "version.h"
 #include "usefulMacros.h"
 
+
+/* Define some general types */
 typedef uint32_t MavkResult;
 typedef uint32_t MavkBool;
 
+
+/* Instance types & functions */
 typedef struct MavkCreateInstance{
-	uint8_t x;
-} MavkCreateReference;
-MAVK_DECL MavkResult mavkCreateInstance(MavkCreateReference *p);
+	MavkBool usingSurface;
+} MavkCreateInstance;
+
+MAVK_DECL MavkCreateInstance mavkCreateInstanceDefault();
+MAVK_DECL MavkResult mavkCreateInstance(MavkCreateInstance *p);
+MAVK_DECL VkInstance mavkGetInstance();
+
+
+/* I dont know where esle to put these :) */
+MAVK_DECL void mavkDestroy();
+
 
 #endif /* HEADER GUARD */

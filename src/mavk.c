@@ -30,16 +30,64 @@
 	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
 */
 
-#include "../include/mavk/mavk.h"
+#include "mavk/mavk.h"
 
 static VkInstance s_instance;
 
-static MavkResult imavkCreateInstanceDefault(){
-	MAVK_DEBUG_ERR("imavkCreateInstanceDefault not implemented", -1);
+/* Instance types & functions */
+//MAVK_IMPL static {
+
 }
-MAVK_IMPL MavkResult mavkCreateInstance(MavkCreateReference *p){
-	if (p == NULL) {
-		return imavkCreateInstanceDefault();
+MAVK_IMPL MavkCreateInstance mavkCreateInstanceDefault(){
+	MavkCreateInstance ci;
+	ci.usingSurface = MAVK_TRUE;
+	return ci;
+}
+MAVK_IMPL MavkResult mavkCreateInstance(MavkCreateInstance *p){
+	VkApplicationInfo ai;
+	ai.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
+	ai.pNext = NULL;
+	ai.pApplicationName = "mavk";
+	ai.applicationVersion = VK_MAKE_VERSION(MAVK_VERSION_MAJOR, MAVK_VERSION_MINOR, MAVK_VERSION_PATCH);
+	ai.pEngineName = MAVK_VERSION_NAME;
+	ai.engineVersion = VK_MAKE_VERSION(MAVK_VERSION_MAJOR, MAVK_VERSION_MINOR, MAVK_VERSION_PATCH);
+
+	VkInstanceCreateInfo ici;
+	ici.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+	ici.pNext = NULL;
+	if (p->usingSurface){
+		ici.enabledExtensionCount = 2;
+		ici.pEnabledExtensions = {
+			"VK_KHR_surface",
+			#if defined(MAVK_PLATFORM_X11)
+				"VK_KHR_xcb_surface"
+			#elif defined(MAVK_PLATFORM_WAYLAND)
+				"VK_KHR_wayland_surface"
+			#elif defined(MAVK_PLATFORM_WINDOWS)
+				"VK_KHR_win32_surface"
+			#endif
+		};
 	}
-	return MAVK_OK;
+
+	#if !defined(NDEBUG)
+		ici.enabledLayerCount = 1;
+		ici.pEnabledLayers = {"VK_LAYER_KHRONOS_validation"};
+	#else
+		ici.enabledLayerCount = 0;
+		ici.pEnabledLayers = NULL;
+	#endif
+
+	ici.pAppicationInfo = &ai;
+
+	return VkCreateInstance(&ici, NULL, &s_instance);
+	
+}
+MAVK_IMPL VkInstance mavkGetInstance(){
+	return s_instance;
+}
+
+
+/* I dont know where esle to put these :) */
+MAVK_IMPL void mavkDestroy(){
+	
 }
