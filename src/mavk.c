@@ -31,19 +31,30 @@
 */
 
 #include "mavk/mavk.h"
+#include <vulkan/vulkan.h>
+
+#if !defined(NDEBUG)
+#include <stdio.h>
+#endif
 
 static VkInstance s_instance;
 
 /* Instance types & functions */
 //MAVK_IMPL static {
 
-}
+//}
 MAVK_IMPL MavkCreateInstance mavkCreateInstanceDefault(){
 	MavkCreateInstance ci;
 	ci.usingSurface = MAVK_TRUE;
 	return ci;
 }
 MAVK_IMPL MavkResult mavkCreateInstance(MavkCreateInstance *p){
+	#if !defined(NDEBUG)
+		if (p == NULL){
+			puts("passed NULL variable into mavkCreateInstance!");
+		}
+	#endif
+
 	VkApplicationInfo ai;
 	ai.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
 	ai.pNext = NULL;
@@ -55,32 +66,44 @@ MAVK_IMPL MavkResult mavkCreateInstance(MavkCreateInstance *p){
 	VkInstanceCreateInfo ici;
 	ici.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 	ici.pNext = NULL;
+
+	// I will leave these definitions
+	const char *enabledExtensions[] = {
+		"VK_KHR_surface",
+		#if defined(MAVK_PLATFORM_X11)
+			"VK_KHR_xcb_surface",
+		#elif defined(MAVK_PLATFORM_WAYLAND)
+			"VK_KHR_wayland_surface",
+		#elif defined(MAVK_PLATFORM_WINDOWS)
+			"VK_KHR_win32_surface",
+		#endif
+
+		#if !defined(NDEBUG)
+			VK_EXT_DEBUG_UTILS_EXTENSION_NAME
+		#endif
+
+	};
+	const char *enabledLayers[] = {
+		"VK_LAYER_KHRONOS_validation"
+	};
+
 	if (p->usingSurface){
-		ici.enabledExtensionCount = 2;
-		ici.pEnabledExtensions = {
-			"VK_KHR_surface",
-			#if defined(MAVK_PLATFORM_X11)
-				"VK_KHR_xcb_surface"
-			#elif defined(MAVK_PLATFORM_WAYLAND)
-				"VK_KHR_wayland_surface"
-			#elif defined(MAVK_PLATFORM_WINDOWS)
-				"VK_KHR_win32_surface"
-			#endif
-		};
+		ici.enabledExtensionCount = sizeof(enabledExtensions) / sizeof(char *);
+		ici.ppEnabledExtensionNames = (const char *const *)enabledExtensions;
 	}
 
+	ici.ppEnabledLayerNames = (const char * const*)enabledLayers;
 	#if !defined(NDEBUG)
 		ici.enabledLayerCount = 1;
-		ici.pEnabledLayers = {"VK_LAYER_KHRONOS_validation"};
 	#else
 		ici.enabledLayerCount = 0;
-		ici.pEnabledLayers = NULL;
 	#endif
 
-	ici.pAppicationInfo = &ai;
+	ici.pApplicationInfo = &ai;
 
-	return VkCreateInstance(&ici, NULL, &s_instance);
-	
+
+
+	return vkCreateInstance(&ici, NULL, &s_instance);	
 }
 MAVK_IMPL VkInstance mavkGetInstance(){
 	return s_instance;

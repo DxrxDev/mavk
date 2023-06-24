@@ -56,6 +56,7 @@ project("mavk")
 	kind "StaticLib"
 	files {"**.c", "**.h"}
 	includedirs {"include"}
+	links {"vulkan", "m"}
 
 	objdir    "bin-int/%{cfg.system}-%{cfg.buildcfg}"
 	targetdir "bin/%{cfg.system}-%{cfg.buildcfg}"
