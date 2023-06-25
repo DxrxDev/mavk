@@ -37,24 +37,42 @@
 #include <stdio.h>
 #endif
 
+/* Note: s_ is for static variables, sf_ is for static functions */
+
 static VkInstance s_instance;
 
-/* Instance types & functions */
-//MAVK_IMPL static {
+#if !defined(NDEBUG)
+static VkDebugUtilsMessengerEXT s_debugMsg;
+MAVK_IMPL static VKAPI_ATTR VkBool32 VKAPI_CALL sf_mavkDebugCallbackFunction(
+	VkDebugUtilsMessageSeverityFlagBitsEXT _severity,
+	VkDebugUtilsMessageTypeFlagsEXT _type,
+	const VkDebugUtilsMessengerCallbackDataEXT* _data,
+	void* _uData) {
 
-//}
+    printf("validation layer: %s\n", _data->pMessage);
+
+    return VK_FALSE;
+}
+
+MAVK_IMPL static sf_mavkDebugCallback(){
+	
+}
+#endif
+
 MAVK_IMPL MavkCreateInstance mavkCreateInstanceDefault(){
 	MavkCreateInstance ci;
 	ci.usingSurface = MAVK_TRUE;
 	return ci;
 }
-MAVK_IMPL MavkResult mavkCreateInstance(MavkCreateInstance *p){
+MAVK_IMPL MavkResult mavkCreateInstance(MavkCreateInstance *_p){
+	/* Debug parameter checking */
 	#if !defined(NDEBUG)
-		if (p == NULL){
+		if (_p == NULL){
 			puts("passed NULL variable into mavkCreateInstance!");
 		}
 	#endif
 
+	/* App info */
 	VkApplicationInfo ai;
 	ai.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
 	ai.pNext = NULL;
@@ -63,11 +81,13 @@ MAVK_IMPL MavkResult mavkCreateInstance(MavkCreateInstance *p){
 	ai.pEngineName = MAVK_VERSION_NAME;
 	ai.engineVersion = VK_MAKE_VERSION(MAVK_VERSION_MAJOR, MAVK_VERSION_MINOR, MAVK_VERSION_PATCH);
 
+
+	/* Now for some instance creation wizardry */
 	VkInstanceCreateInfo ici;
 	ici.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 	ici.pNext = NULL;
 
-	// I will leave these definitions
+	// I will leave these definitions here for convenience
 	const char *enabledExtensions[] = {
 		"VK_KHR_surface",
 		#if defined(MAVK_PLATFORM_X11)
@@ -87,7 +107,7 @@ MAVK_IMPL MavkResult mavkCreateInstance(MavkCreateInstance *p){
 		"VK_LAYER_KHRONOS_validation"
 	};
 
-	if (p->usingSurface){
+	if (_p->usingSurface){
 		ici.enabledExtensionCount = sizeof(enabledExtensions) / sizeof(char *);
 		ici.ppEnabledExtensionNames = (const char *const *)enabledExtensions;
 	}
@@ -101,9 +121,14 @@ MAVK_IMPL MavkResult mavkCreateInstance(MavkCreateInstance *p){
 
 	ici.pApplicationInfo = &ai;
 
+	/* :) */
+	VkResult res = vkCreateInstance(&ici, NULL, &s_instance);
 
+	#if !defined(NDEBUG)
+		sf_mavkDebugCallback();
+	#endif
 
-	return vkCreateInstance(&ici, NULL, &s_instance);	
+	return res;
 }
 MAVK_IMPL VkInstance mavkGetInstance(){
 	return s_instance;
