@@ -38,8 +38,14 @@
 #endif
 
 /* Note: s_ is for static variables, sf_ is for static functions */
-
 static VkInstance s_instance;
+
+static VkPhysicalDevice *s_pDevices;
+static uint32_t s_pDeviceCount;
+
+
+
+/*** INSTANCE RELATED SECTION ***/
 
 #if !defined(NDEBUG)
 static VkDebugUtilsMessengerEXT s_debugMsg;
@@ -54,8 +60,24 @@ MAVK_IMPL static VKAPI_ATTR VkBool32 VKAPI_CALL sf_mavkDebugCallbackFunction(
     return VK_FALSE;
 }
 
-MAVK_IMPL static sf_mavkDebugCallback(){
-	
+MAVK_IMPL static void sf_mavkDebugCallback(){
+	/* Setting up the callback function. only detecting warnings and errors */
+	VkDebugUtilsMessengerCreateInfoEXT dumci;
+	dumci.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
+	dumci.pNext = NULL;
+	dumci.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
+	dumci.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
+	dumci.pfnUserCallback = sf_mavkDebugCallbackFunction;
+	dumci.pUserData = NULL;
+
+	PFN_vkCreateDebugUtilsMessengerEXT fun = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(s_instance, "vkCreateDebugUtilsMessengerEXT");
+	if (fun == NULL) {
+		puts("Couldnt set up the debug callback: :/\n"); return;
+	}
+
+	VkResult res = fun(s_instance, &dumci, NULL, &s_debugMsg);
+
+	printf("Created debug callback messenger with result %i\n", res);
 }
 #endif
 
@@ -133,9 +155,24 @@ MAVK_IMPL MavkResult mavkCreateInstance(MavkCreateInstance *_p){
 MAVK_IMPL VkInstance mavkGetInstance(){
 	return s_instance;
 }
+MAVK_IMPL void mavkSetInstance(VkInstance _inst){
+	s_instance = _inst;
+}
+
+
+/*** DEVICE RELATED SECTION ***/
+
 
 
 /* I dont know where esle to put these :) */
 MAVK_IMPL void mavkDestroy(){
+	#if !defined(NDEBUG)
 	
+	PFN_vkDestroyDebugUtilsMessengerEXT fun = (PFN_vkDestroyDebugUtilsMessengerEXT) vkGetInstanceProcAddr(s_instance, "vkDestroyDebugUtilsMessengerEXT");
+	if (fun != NULL){fun(s_instance, s_debugMsg, NULL);}	
+	
+	#endif	
+
+
+	vkDestroyInstance(s_instance, NULL);
 }

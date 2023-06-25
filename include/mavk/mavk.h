@@ -54,7 +54,7 @@ typedef struct MavkCreateInstance{
 MAVK_DECL MavkCreateInstance mavkCreateInstanceDefault();
 MAVK_DECL MavkResult mavkCreateInstance(MavkCreateInstance *p);
 MAVK_DECL VkInstance mavkGetInstance();
-
+MAVK_DECL void mavkSetInstance(VkInstance _inst);
 
 /* I dont know where esle to put these :) */
 MAVK_DECL void mavkDestroy();
